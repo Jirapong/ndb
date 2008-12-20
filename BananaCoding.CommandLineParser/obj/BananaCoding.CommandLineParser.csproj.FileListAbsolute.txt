@@ -1,0 +1,5 @@
+C:\Documents and Settings\Jirapong\My Documents\Visual Studio 2005\Projects\BananaCoding.Tools\BananaCoding.CommandLineParser\bin\Debug\BananaCoding.CommandLineParser.dll
+C:\Documents and Settings\Jirapong\My Documents\Visual Studio 2005\Projects\BananaCoding.Tools\BananaCoding.CommandLineParser\bin\Debug\BananaCoding.CommandLineParser.pdb
+C:\Documents and Settings\Jirapong\My Documents\Visual Studio 2005\Projects\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Jirapong\My Documents\Visual Studio 2005\Projects\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\BananaCoding.CommandLineParser.dll
+C:\Documents and Settings\Jirapong\My Documents\Visual Studio 2005\Projects\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\BananaCoding.CommandLineParser.pdb

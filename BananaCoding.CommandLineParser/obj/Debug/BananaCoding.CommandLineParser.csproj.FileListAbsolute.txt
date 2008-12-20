@@ -1,0 +1,5 @@
+C:\repository\BananaCoding.Tools\BananaCoding.CommandLineParser\bin\Debug\BananaCoding.CommandLineParser.dll
+C:\repository\BananaCoding.Tools\BananaCoding.CommandLineParser\bin\Debug\BananaCoding.CommandLineParser.pdb
+C:\repository\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\ResolveAssemblyReference.cache
+C:\repository\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\BananaCoding.CommandLineParser.dll
+C:\repository\BananaCoding.Tools\BananaCoding.CommandLineParser\obj\Debug\BananaCoding.CommandLineParser.pdb

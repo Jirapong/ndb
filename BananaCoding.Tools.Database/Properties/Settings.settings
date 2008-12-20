@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BananaCoding.Tools.Database.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TestDB</Value>
+    </Setting>
+    <Setting Name="Server" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\SQLEXPRESS</Value>
+    </Setting>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Production_Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ProductionDB</Value>
+    </Setting>
+    <Setting Name="Production_Server" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(local)\SQLEXPRESS</Value>
+    </Setting>
+    <Setting Name="Production_UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Production_Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
