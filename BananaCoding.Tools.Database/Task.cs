@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using BananaCoding.CommandLineParser;
 
-namespace BananaCoding.Tools.Database
-{
+namespace BananaCoding.Tools.Database {
     /// <summary>
     /// Commandline tasks
     /// </summary>
-    internal class Task
-    {
+    internal class Task {
         public MigrationKind Migration { get; set; }
 
         [CommandLineSwitch("reset", "Clear and recreates the database for the current /environment")]
@@ -32,9 +30,13 @@ namespace BananaCoding.Tools.Database
         [CommandLineAlias("m")]
         public bool Migrate { get; set; }
 
-        [CommandLineSwitch("aspnet_membership", "Install ASP.NET Membership Database")]
-        [CommandLineAlias("aspnet_membership")]
-        public bool Membership { get; set; }
+        [CommandLineSwitch("migrate_to", "Migrate database to version. e.g. /mt:10")]
+        [CommandLineAlias("mt")]
+        public int MigrateTo { get; set; }
+
+        [CommandLineSwitch("no_aspnet_membership", "Ignore install ASP.NET Membership Database")]
+        [CommandLineAlias("no_aspnet")]
+        public bool NoMembership { get; set; }
 
         [CommandLineSwitch("trace", "Turn on invoke/execute tracing, enable full backtrace.")]
         [CommandLineAlias("t")]

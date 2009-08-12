@@ -2,20 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BananaCoding.Tools.Database
-{
-    internal enum MigrationKind
-    {
+namespace BananaCoding.Tools.Database {
+    internal enum MigrationKind {
         Up,
         Down,
         ToCurrentVersion,
         ToVersion
     }
 
-    public enum DBEnvironments
-    {
+    public enum DBEnvironments {
         Development,
         Production
     }
-    
+
 }

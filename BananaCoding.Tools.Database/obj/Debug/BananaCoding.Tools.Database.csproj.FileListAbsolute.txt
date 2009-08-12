@@ -1,8 +1,0 @@
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\bin\Debug\ndb.exe.config
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\bin\Debug\ndb.exe
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\bin\Debug\ndb.pdb
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\bin\Debug\BananaCoding.CommandLineParser.dll
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\bin\Debug\BananaCoding.CommandLineParser.pdb
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\obj\Debug\ResolveAssemblyReference.cache
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\obj\Debug\ndb.exe
-C:\repository\BananaCoding.Tools\BananaCoding.Tools.Database\obj\Debug\ndb.pdb
