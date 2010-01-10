@@ -34,9 +34,13 @@ namespace BananaCoding.Tools.Database {
         [CommandLineAlias("mt")]
         public int MigrateTo { get; set; }
 
-        [CommandLineSwitch("no_aspnet_membership", "Ignore install ASP.NET Membership Database")]
+        [CommandLineSwitch("no_aspnet_membership", "Ignore install ASP.NET Membership Database (default no_aspnet)")]
         [CommandLineAlias("no_aspnet")]
         public bool NoMembership { get; set; }
+
+        [CommandLineSwitch("aspnet_membership", "Install ASP.NET Membership Database")]
+        [CommandLineAlias("aspnet")]
+        public bool AspNet { get; set; }
 
         [CommandLineSwitch("trace", "Turn on invoke/execute tracing, enable full backtrace.")]
         [CommandLineAlias("t")]
@@ -45,5 +49,9 @@ namespace BananaCoding.Tools.Database {
         [CommandLineSwitch("environment", "Specify the environment to run script.")]
         [CommandLineAlias("env")]
         public DBEnvironments Environment { get; set; }
+
+        [CommandLineSwitch("xml", "Xml output e.g. /xml:C:\\temp\\out.xml .")]
+        [CommandLineAlias("xml")]
+        public string Xml { get; set; }
     }
 }

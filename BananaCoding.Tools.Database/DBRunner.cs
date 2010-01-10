@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BananaCoding.CommandLineParser;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace BananaCoding.Tools.Database {
     public class DBRunner {
@@ -21,59 +22,98 @@ namespace BananaCoding.Tools.Database {
             // Parse the command line.
             parser.Parse();
 
-            try {
-                if (task.CreateDB) {
+            try
+            {
+                if (!string.IsNullOrEmpty(task.Xml))
+                {
+                    SqlDBHelper.Logger = new StreamWriter(task.Xml);
+                    SqlDBHelper.WriteXmlHeader();
+                }
+
+                if (task.CreateDB)
+                {
                     SqlDBHelper.CreateDB(task.Environment);
-                } else if (task.ClearDB) {
+                }
+                else if (task.ClearDB)
+                {
                     SqlDBHelper.DeleteDB(task.Environment);
-                } else if (task.Migrate) {
+                }
+                else if (task.Migrate)
+                {
                     SqlDBHelper.Migrate(task);
-                } else if (task.Version) {
+                }
+                else if (task.Version)
+                {
                     SqlDBHelper.ViewVersion(task.Environment);
-                } else if (task.Reset) {
+                }
+                else if (task.Reset)
+                {
                     SqlDBHelper.DeleteDB(task.Environment);
                     SqlDBHelper.CreateDB(task.Environment);
                     SqlDBHelper.Migrate(task);
-                } else
+                }
+                else
                     printUsage(parser);
-            } catch (Microsoft.SqlServer.Management.Common.ExecutionFailureException smoEx) {
+            }
+            catch (Microsoft.SqlServer.Management.Common.ExecutionFailureException smoEx)
+            {
                 StringBuilder errorSb = new StringBuilder();
-                if (smoEx.InnerException != null) {
+                if (smoEx.InnerException != null)
+                {
                     errorSb.AppendLine(smoEx.InnerException.HelpLink + smoEx.InnerException.Message);
                     errorSb.AppendLine(task.Trace ? smoEx.InnerException.StackTrace : "(See full trace by running ndb.exe with /trace)");
-                } else {
+                }
+                else
+                {
                     errorSb.AppendLine(smoEx.Message);
                     errorSb.AppendLine(task.Trace ? smoEx.StackTrace : "(See full trace by running ndb.exe with /trace)");
                 }
 
-                Console.WriteLine(errorSb);
-            } catch (SqlException dbEx) {
+                SqlDBHelper.MessageOut(errorSb.ToString());
+            }
+            catch (SqlException dbEx)
+            {
                 StringBuilder errorSb = new StringBuilder();
 
                 errorSb.AppendLine(dbEx.Message);
 
-                if (task.Trace) {
-                    foreach (SqlError err in dbEx.Errors) {
+                if (task.Trace)
+                {
+                    foreach (SqlError err in dbEx.Errors)
+                    {
                         errorSb.AppendLine(err.ToString());
                     }
-                } else
+                }
+                else
                     errorSb.AppendLine("(See full trace by running ndb.exe with /trace)");
 
-                Console.WriteLine(errorSb);
-            } catch (Exception generalEx) {
+                SqlDBHelper.MessageOut(errorSb.ToString());
+            }
+            catch (Exception generalEx)
+            {
                 StringBuilder errorSb = new StringBuilder();
 
                 errorSb.AppendLine(generalEx.GetType().ToString() + generalEx.Message);
                 errorSb.AppendLine(task.Trace ? generalEx.StackTrace : "(See full trace by running ndb.exe with /trace)");
 
-                Console.WriteLine(errorSb);
+                SqlDBHelper.MessageOut(errorSb.ToString());
             }
+            finally
+            {
+                if (!string.IsNullOrEmpty(task.Xml))
+                {
+                    SqlDBHelper.WriteXmlFooter();
+                    SqlDBHelper.Logger.Flush();
+                    SqlDBHelper.Logger.Close();
+                }
+            }
+
             // For error handling, were any switches handled?
             string[] unhandled = parser.UnhandledSwitches;
             if (unhandled != null && unhandled.Length > 0) {
-                Console.WriteLine("\nThe following switches were not handled.");
+                SqlDBHelper.MessageOut("\nThe following switches were not handled.");
                 foreach (string s in unhandled)
-                    Console.WriteLine("  - {0}", s);
+                    SqlDBHelper.MessageOut(string.Format("  - {0}", s));
             }
         }
 

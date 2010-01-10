@@ -10,6 +10,9 @@ using BananaCoding.Tools.Database.Utility;
 
 namespace BananaCoding.Tools.Database {
     public class SqlDBHelper {
+
+        public static TextWriter Logger = Console.Out;
+
         private static string GetDatabaseName(DBEnvironments environment) {
             string dbName;
             switch (environment) {
@@ -35,13 +38,13 @@ namespace BananaCoding.Tools.Database {
             string dbName = GetDatabaseName(environment);
 
             if (IsExists(environment, dbName)) {
-                Console.WriteLine("{0} already exists", dbName);
+                MessageOut("{0} already exists", dbName);
                 return;
             }
 
             // Create Connection String from Configuration File
             string sqlConStr = BuildConnectionString(environment, "master");
-            Console.WriteLine("in {0}", sqlConStr);
+            MessageOut("in {0}", sqlConStr);
 
             // CREATE DATABASE in context of master db
             string sqlQuery = string.Format("CREATE DATABASE {0}; \r\n GO", dbName);
@@ -49,7 +52,7 @@ namespace BananaCoding.Tools.Database {
 
             // Create schema_version table
             sqlConStr = BuildConnectionString(environment, dbName);
-            Console.WriteLine("in {0}", sqlConStr);
+            MessageOut("in {0}", sqlConStr);
             SqlScriptHelper.ExecuteScriptFromEmbeddedResource("BananaCoding.Tools.Database.DBScripts.create_schema.sql", sqlConStr);
         }
 
@@ -57,13 +60,13 @@ namespace BananaCoding.Tools.Database {
             string dbName = GetDatabaseName(environment);
 
             if (!IsExists(environment, dbName)) {
-                Console.WriteLine("{0} not found", dbName);
+                MessageOut("{0} not found", dbName);
                 return;
             }
 
             // Create Connection String from Configuration File
             string sqlConStr = BuildConnectionString(environment, "master");
-            Console.WriteLine("in {0}", sqlConStr);
+            MessageOut("in {0}", sqlConStr);
 
             // Uninstall ASP.NET Membership table
             // No need because we can delete just the database
@@ -103,7 +106,7 @@ namespace BananaCoding.Tools.Database {
             string dbName = GetDatabaseName(environment);
 
             if (!IsExists(environment, dbName)) {
-                Console.WriteLine("{0} not found", dbName);
+                MessageOut("{0} not found", dbName);
                 return;
             }
 
@@ -122,24 +125,24 @@ namespace BananaCoding.Tools.Database {
         internal static void Migrate(Task task) {
             DBEnvironments environment = task.Environment;
             int migrateTo = task.MigrateTo;
-            bool noASPNET = task.NoMembership;
+            bool aspNET = task.AspNet;
 
             string dbName = GetDatabaseName(environment);
 
             if (!IsExists(environment, dbName)) {
-                Console.WriteLine("{0} not found", dbName);
+                MessageOut("{0} not found", dbName);
                 return;
             }
 
             // Create Connection String from Configuration File
             string sqlConStr = BuildConnectionString(environment, dbName);
-            Console.WriteLine("in {0}", sqlConStr);
+            MessageOut("in {0}", sqlConStr);
 
             // Update Schema version
             int? latestVersion = GetLatestSchemaVersion(sqlConStr);
 
             // Migrate 000 first
-            if (!latestVersion.HasValue && !noASPNET) InstallMembership(environment);
+            if (!latestVersion.HasValue && aspNET) InstallMembership(environment);
 
             // Get all migration files
             var sw = new Stopwatch();
@@ -155,7 +158,7 @@ namespace BananaCoding.Tools.Database {
                 if (migrateTo != 0 && versionNumber > migrateTo) break;
 
                 using (TransactionScope scope = new TransactionScope()) {
-                    Console.WriteLine(@"Run script ------ {0} --------------------------", versionName);
+                    MessageOut(@"Run script ------ {0} --------------------------", versionName);
 
                     sw.Reset();
                     sw.Start();
@@ -167,7 +170,7 @@ namespace BananaCoding.Tools.Database {
                     UpdateVersionSchema(sqlConStr, versionName);
 
                     sw.Stop();
-                    Console.WriteLine(@"Run script ------ {0} ({1}ms) ------ successfully.", versionName, sw.ElapsedMilliseconds);
+                    MessageOut(@"Run script ------ {0} ({1}ms) ------ successfully.", versionName, sw.ElapsedMilliseconds);
 
                     scope.Complete();
                 }
@@ -178,19 +181,19 @@ namespace BananaCoding.Tools.Database {
             string dbName = GetDatabaseName(environment);
 
             if (!IsExists(environment, dbName)) {
-                Console.WriteLine("{0} not found", dbName);
+                MessageOut("{0} not found", dbName);
                 return;
             }
 
             // Create Connection String from Configuration File
             string sqlConStr = BuildConnectionString(environment, dbName);
-            Console.WriteLine("in {0}", sqlConStr);
+            MessageOut("in {0}", sqlConStr);
 
             string versionName = GetLatestSchemaVersionName(sqlConStr);
             if (!string.IsNullOrEmpty(versionName))
-                Console.WriteLine("Current Version: {0}", versionName);
+                MessageOut("Current Version: {0}", versionName);
             else
-                Console.WriteLine("Database is empty");
+                MessageOut("Database is empty");
         }
 
         private static string GetLatestSchemaVersionName(string sqlConStr) {
@@ -250,6 +253,34 @@ namespace BananaCoding.Tools.Database {
             return sqlConBuilder.ConnectionString;
         }
 
+        public static void WriteXmlHeader()
+        {
+            Logger.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+            Logger.WriteLine("<ndb>");
+        }
+
+        public static void WriteXmlFooter()
+        {
+            string header = "</ndb>";
+            Logger.WriteLine(header);
+        }
+
+        public static void MessageOut(string format, params object[] args)
+        {
+            MessageOut(string.Format(format, args));
+        }
+
+        public static void MessageOut(string message)
+        {
+            if (Logger.GetType() == typeof(StreamWriter))
+            {
+                Logger.WriteLine(string.Format("<message>{0}</message>", message));
+            }
+            else
+            {
+                Logger.WriteLine(message);
+            }
+        }
 
     }
 }
