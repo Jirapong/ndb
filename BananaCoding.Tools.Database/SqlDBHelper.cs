@@ -274,7 +274,7 @@ namespace BananaCoding.Tools.Database {
         {
             if (Logger.GetType() == typeof(StreamWriter))
             {
-                Logger.WriteLine(string.Format("<message>{0}</message>", message));
+                Logger.WriteLine(string.Format("<message><text>{0}</text></message>", message));
             }
             else
             {
