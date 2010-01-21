@@ -3,11 +3,17 @@
 
   <xsl:output method="html" />
 
-  <xsl:template match="//ndb">
-    <strong>ndb Summary</strong>
-    <style type="text/css">
+  <xsl:template match="/">
+    <div id="ndb-report">
+      <style type="text/css">
         .text { pending: 0px; margin: 2px; font-size: small;}
       </style>
+      <xsl:apply-templates select="//ndb"/>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="//ndb">
+    <h1>ndb Summary</h1>
     <br/>
 
     <xsl:for-each select="message">

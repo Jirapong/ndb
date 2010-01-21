@@ -222,6 +222,11 @@ namespace BananaCoding.Tools.Database {
             using (SqlConnection conn = new SqlConnection(sqlConStr)) {
                 SqlCommand cmd = new SqlCommand("INSERT INTO schema_version(version) VALUES(@Version);", conn);
 
+                if (versionName.Length < 255)
+                {
+                    versionName = versionName.Substring(0, 255);
+                }
+
                 cmd.Parameters.AddWithValue("@Version", versionName);
                 conn.Open();
                 cmd.ExecuteNonQuery();

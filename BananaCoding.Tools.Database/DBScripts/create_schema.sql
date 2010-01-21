@@ -1,5 +1,5 @@
 ﻿CREATE TABLE schema_version
 (
-	version VARCHAR(50) PRIMARY KEY NOT NULL
+	version VARCHAR(255) PRIMARY KEY NOT NULL
 );
 GO

@@ -1,3 +1,8 @@
 BananaCoding.Tools.Database/bin
 BananaCoding.Tools.Database/obj
+BananaCoding.CommandLineParser/obj
+BananaCoding.CommandLineParser/bin
 *.suo
+.DS_Store
+._.DS_Store
+Deploy/*.xml
