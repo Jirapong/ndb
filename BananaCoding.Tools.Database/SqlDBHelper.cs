@@ -8,14 +8,18 @@ using System.Web.Management;
 using System.Diagnostics;
 using BananaCoding.Tools.Database.Utility;
 
-namespace BananaCoding.Tools.Database {
-    public class SqlDBHelper {
+namespace BananaCoding.Tools.Database
+{
+    public class SqlDBHelper
+    {
 
         public static TextWriter Logger = Console.Out;
 
-        private static string GetDatabaseName(DBEnvironments environment) {
+        private static string GetDatabaseName(DBEnvironments environment)
+        {
             string dbName;
-            switch (environment) {
+            switch (environment)
+            {
                 case DBEnvironments.Development:
                     dbName = Properties.Settings.Default.Database;
                     break;
@@ -27,17 +31,20 @@ namespace BananaCoding.Tools.Database {
                     break;
             }
 
-            if (string.IsNullOrEmpty(dbName)) {
+            if (string.IsNullOrEmpty(dbName))
+            {
                 throw new ArgumentException("You must supply the file name of a database", dbName);
             }
 
             return dbName;
         }
 
-        public static void CreateDB(DBEnvironments environment) {
+        public static void CreateDB(DBEnvironments environment)
+        {
             string dbName = GetDatabaseName(environment);
 
-            if (IsExists(environment, dbName)) {
+            if (IsExists(environment, dbName))
+            {
                 MessageOut("{0} already exists", dbName);
                 return;
             }
@@ -56,10 +63,12 @@ namespace BananaCoding.Tools.Database {
             SqlScriptHelper.ExecuteScriptFromEmbeddedResource("BananaCoding.Tools.Database.DBScripts.create_schema.sql", sqlConStr);
         }
 
-        public static void DeleteDB(DBEnvironments environment) {
+        public static void DeleteDB(DBEnvironments environment)
+        {
             string dbName = GetDatabaseName(environment);
 
-            if (!IsExists(environment, dbName)) {
+            if (!IsExists(environment, dbName))
+            {
                 MessageOut("{0} not found", dbName);
                 return;
             }
@@ -82,15 +91,18 @@ namespace BananaCoding.Tools.Database {
 
         }
 
-        internal static bool IsExists(DBEnvironments environment, string dbName) {
-            if (string.IsNullOrEmpty(dbName)) {
+        internal static bool IsExists(DBEnvironments environment, string dbName)
+        {
+            if (string.IsNullOrEmpty(dbName))
+            {
                 throw new ArgumentException("You must supply the file name of a database", dbName);
             }
 
             // Create Connection String from Configuration File
             string sqlConStr = BuildConnectionString(environment, "master");
 
-            using (SqlConnection connection = new SqlConnection(sqlConStr)) {
+            using (SqlConnection connection = new SqlConnection(sqlConStr))
+            {
                 string sqlQuery = string.Format("SELECT name FROM sys.databases WHERE name = '{0}'", dbName);
 
                 SqlCommand cmd = new SqlCommand(sqlQuery, connection);
@@ -102,10 +114,12 @@ namespace BananaCoding.Tools.Database {
             }
         }
 
-        internal static void InstallMembership(DBEnvironments environment) {
+        internal static void InstallMembership(DBEnvironments environment)
+        {
             string dbName = GetDatabaseName(environment);
 
-            if (!IsExists(environment, dbName)) {
+            if (!IsExists(environment, dbName))
+            {
                 MessageOut("{0} not found", dbName);
                 return;
             }
@@ -122,14 +136,16 @@ namespace BananaCoding.Tools.Database {
 
         }
 
-        internal static void Migrate(Task task) {
+        internal static void Migrate(Task task)
+        {
             DBEnvironments environment = task.Environment;
             int migrateTo = task.MigrateTo;
             bool aspNET = task.AspNet;
 
             string dbName = GetDatabaseName(environment);
 
-            if (!IsExists(environment, dbName)) {
+            if (!IsExists(environment, dbName))
+            {
                 MessageOut("{0} not found", dbName);
                 return;
             }
@@ -148,7 +164,8 @@ namespace BananaCoding.Tools.Database {
             var sw = new Stopwatch();
             string[] files = Directory.GetFiles(@"migrate", "*.sql");
             Array.Sort<string>(files);
-            foreach (var sqlscript in files) {
+            foreach (var sqlscript in files)
+            {
                 // ignore vim backup file
                 if (sqlscript.EndsWith("~")) continue;
 
@@ -157,7 +174,8 @@ namespace BananaCoding.Tools.Database {
                 if (latestVersion.HasValue && versionNumber <= latestVersion) continue;
                 if (migrateTo != 0 && versionNumber > migrateTo) break;
 
-                using (TransactionScope scope = new TransactionScope()) {
+                using (TransactionScope scope = new TransactionScope())
+                {
                     MessageOut(@"Run script ------ {0} --------------------------", versionName);
 
                     sw.Reset();
@@ -177,10 +195,12 @@ namespace BananaCoding.Tools.Database {
             }
         }
 
-        internal static void ViewVersion(DBEnvironments environment) {
+        internal static void ViewVersion(DBEnvironments environment)
+        {
             string dbName = GetDatabaseName(environment);
 
-            if (!IsExists(environment, dbName)) {
+            if (!IsExists(environment, dbName))
+            {
                 MessageOut("{0} not found", dbName);
                 return;
             }
@@ -196,8 +216,10 @@ namespace BananaCoding.Tools.Database {
                 MessageOut("Database is empty");
         }
 
-        private static string GetLatestSchemaVersionName(string sqlConStr) {
-            using (SqlConnection conn = new SqlConnection(sqlConStr)) {
+        private static string GetLatestSchemaVersionName(string sqlConStr)
+        {
+            using (SqlConnection conn = new SqlConnection(sqlConStr))
+            {
                 SqlCommand cmd = new SqlCommand("SELECT TOP 1 version FROM schema_version ORDER BY version DESC", conn);
 
                 conn.Open();
@@ -209,7 +231,8 @@ namespace BananaCoding.Tools.Database {
             return string.Empty;
         }
 
-        private static int? GetLatestSchemaVersion(string sqlConStr) {
+        private static int? GetLatestSchemaVersion(string sqlConStr)
+        {
             string versionName = GetLatestSchemaVersionName(sqlConStr);
 
             if (string.IsNullOrEmpty(versionName))
@@ -218,8 +241,10 @@ namespace BananaCoding.Tools.Database {
             return GetVersionNumber(versionName);
         }
 
-        private static void UpdateVersionSchema(string sqlConStr, string versionName) {
-            using (SqlConnection conn = new SqlConnection(sqlConStr)) {
+        private static void UpdateVersionSchema(string sqlConStr, string versionName)
+        {
+            using (SqlConnection conn = new SqlConnection(sqlConStr))
+            {
                 SqlCommand cmd = new SqlCommand("INSERT INTO schema_version(version) VALUES(@Version);", conn);
 
                 if (versionName.Length < 255)
@@ -233,7 +258,8 @@ namespace BananaCoding.Tools.Database {
             }
         }
 
-        private static int GetVersionNumber(string fullname) {
+        private static int GetVersionNumber(string fullname)
+        {
             int version = 0;
 
             if (int.TryParse(fullname.Split('_')[0], out version))
@@ -242,18 +268,25 @@ namespace BananaCoding.Tools.Database {
                 throw new InvalidOperationException(string.Format("Cannot read version from a given name '{0}'", fullname));
         }
 
-        private static string BuildConnectionString(DBEnvironments environment, string dbName) {
+        private static string BuildConnectionString(DBEnvironments environment, string dbName)
+        {
             SqlConnectionStringBuilder sqlConBuilder = new SqlConnectionStringBuilder();
-            sqlConBuilder.DataSource = (environment == DBEnvironments.Development) ? Properties.Settings.Default.Server : Properties.Settings.Default.Production_Server;
+            bool isDev = environment == DBEnvironments.Development;
+            sqlConBuilder.DataSource = isDev ? Properties.Settings.Default.Server : Properties.Settings.Default.Production_Server;
+            string userName = isDev ? Properties.Settings.Default.UserName : Properties.Settings.Default.Production_UserName;
             sqlConBuilder.InitialCatalog = dbName;
             sqlConBuilder.Enlist = false;
             sqlConBuilder.ConnectTimeout = 900;
-            if (string.IsNullOrEmpty(Properties.Settings.Default.UserName)) {
+
+            if (string.IsNullOrEmpty(userName))
+            {
                 sqlConBuilder.IntegratedSecurity = true;
-            } else {
+            }
+            else
+            {
                 sqlConBuilder.IntegratedSecurity = false;
-                sqlConBuilder.UserID = (environment == DBEnvironments.Development) ? Properties.Settings.Default.UserName : Properties.Settings.Default.Production_UserName;
-                sqlConBuilder.Password = (environment == DBEnvironments.Development) ? Properties.Settings.Default.Password : Properties.Settings.Default.Production_Password;
+                sqlConBuilder.UserID = isDev ? Properties.Settings.Default.UserName : Properties.Settings.Default.Production_UserName;
+                sqlConBuilder.Password = isDev ? Properties.Settings.Default.Password : Properties.Settings.Default.Production_Password;
             }
             return sqlConBuilder.ConnectionString;
         }
