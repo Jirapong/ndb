@@ -193,6 +193,51 @@ namespace BananaCoding.Tools.Database
                     scope.Complete();
                 }
             }
+
+            // Load Fixtures
+            if (task.Fixture) LoadFixtures(sqlConStr);
+        }
+
+        private static void LoadFixtures(string sqlConStr)
+        {
+            if (!Directory.Exists(@"fixtures"))
+            {
+                Debug.WriteLine("fixtures folder not found!");
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection(sqlConStr))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT name FROM sys.Tables where type = 'U' and name != 'schema_version';", conn);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                var sw = new Stopwatch();
+                while (reader.Read())
+                {
+                    string table_name = reader.GetString(0);
+                    string sqlscript = Path.Combine(@"fixtures", string.Concat(table_name, ".sql"));
+
+                    // Run Sql from file
+                    if (File.Exists(sqlscript))
+                    {
+                        using (TransactionScope scope = new TransactionScope())
+                        {
+                            MessageOut(@"Run fixture ------ {0} --------------------------", table_name);
+
+                            sw.Reset();
+                            sw.Start();
+
+                            SqlScriptHelper.ExecuteScriptFile(sqlscript, sqlConStr);
+
+                            sw.Stop();
+                            MessageOut(@"Run fixture ------ {0} ({1}ms) ------ successfully.", table_name, sw.ElapsedMilliseconds);
+
+                            scope.Complete();
+                        }
+                    }
+                }
+            }
         }
 
         internal static void ViewVersion(DBEnvironments environment)
@@ -320,5 +365,23 @@ namespace BananaCoding.Tools.Database
             }
         }
 
+
+        internal static void LoadFixtures(Task task)
+        {
+            DBEnvironments environment = task.Environment;
+            string dbName = GetDatabaseName(environment);
+
+            if (!IsExists(environment, dbName))
+            {
+                MessageOut("{0} not found", dbName);
+                return;
+            }
+
+            // Create Connection String from Configuration File
+            string sqlConStr = BuildConnectionString(environment, dbName);
+            MessageOut("in {0}", sqlConStr);
+
+            LoadFixtures(sqlConStr);
+        }
     }
 }

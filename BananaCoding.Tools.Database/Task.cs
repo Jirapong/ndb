@@ -50,8 +50,12 @@ namespace BananaCoding.Tools.Database {
         [CommandLineAlias("env")]
         public DBEnvironments Environment { get; set; }
 
-        [CommandLineSwitch("xml", "Xml output e.g. /xml:C:\\temp\\out.xml .")]
+        [CommandLineSwitch("xml", "Xml output e.g. /xml:C:\\temp\\out.xml.")]
         [CommandLineAlias("xml")]
         public string Xml { get; set; }
+
+        [CommandLineSwitch("fixture", "Include fixture data in \\fixtures folder.")]
+        [CommandLineAlias("f")]
+        public bool Fixture { get; set; }
     }
 }

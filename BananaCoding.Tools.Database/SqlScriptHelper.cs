@@ -11,7 +11,7 @@ using Microsoft.SqlServer.Management.Common;
 /// History: received copy from Brian Noyes
 /// 1) 09/14/2008 - Modify to support SQLite (JN)
 /// 2) 12/17/2008 - Implement SQL Sdk to execute the script file to support multiple GO statement
-///
+/// 3) 03/02/2010 - Seed
 
 namespace BananaCoding.Tools.Database {
     public class SqlScriptHelper {
