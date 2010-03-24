@@ -157,6 +157,9 @@ namespace BananaCoding.Tools.Database
             // Update Schema version
             int? latestVersion = GetLatestSchemaVersion(sqlConStr);
 
+            // Grant Permission
+            if (!string.IsNullOrEmpty(task.GrantPermission)) GrantPermission(environment, task.GrantPermission);
+
             // Migrate 000 first
             if (!latestVersion.HasValue && aspNET) InstallMembership(environment);
 
@@ -196,6 +199,21 @@ namespace BananaCoding.Tools.Database
 
             // Load Fixtures
             if (task.Fixture) LoadFixtures(sqlConStr);
+        }
+
+        private static void GrantPermission(DBEnvironments environment, string userToGrant)
+        {
+            string dbName = GetDatabaseName(environment);
+
+            // Create Connection String from Configuration File
+            string sqlConStr = BuildConnectionString(environment, "master");
+            MessageOut("in {0}", sqlConStr);
+
+            // Grant DATABASE in context of master db
+            string sqlQuery = SqlScriptHelper.LoadScriptFromEmbeddedResource("BananaCoding.Tools.Database.DBScripts.grant_permission.sql");
+            sqlQuery = sqlQuery.Replace("[DBNAME]", dbName);
+            sqlQuery = sqlQuery.Replace("[DBUSER]", userToGrant);
+            SqlScriptHelper.ExecuteScript(sqlQuery, sqlConStr);
         }
 
         private static void LoadFixtures(string sqlConStr)

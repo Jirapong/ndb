@@ -28,6 +28,24 @@ namespace BananaCoding.Tools.Database {
             ExecuteScriptStream(scriptStream, connectionString);
         }
 
+        public static string LoadScriptFromEmbeddedResource(string embeddedResourceName) {
+            if (embeddedResourceName == null || embeddedResourceName == string.Empty)
+            {
+                throw new ArgumentException("embeddedResourceName must be a fully qualified name of an embedded resource file containing SQL Script", embeddedResourceName);
+            }
+            Assembly assem = Assembly.GetCallingAssembly();
+            Stream scriptStream = assem.GetManifestResourceStream(embeddedResourceName);
+            if (scriptStream == null)
+            {
+                throw new ArgumentException(string.Format("No embedded resource named {0} found.", embeddedResourceName), embeddedResourceName);
+            }
+
+            using (StreamReader scriptReader = new StreamReader(scriptStream))
+            {
+                return scriptReader.ReadToEnd();
+            }
+        }
+
         public static void ExecuteScriptFromEmbeddedResource(string embeddedResourceName, string connectionString) {
             if (embeddedResourceName == null || embeddedResourceName == string.Empty) {
                 throw new ArgumentException("embeddedResourceName must be a fully qualified name of an embedded resource file containing SQL Script", embeddedResourceName);

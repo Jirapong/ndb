@@ -82,6 +82,7 @@
     <None Include="App.config" />
     <EmbeddedResource Include="DBScripts\create_schema.sql" />
     <EmbeddedResource Include="DBScripts\update_schema.sql" />
+    <EmbeddedResource Include="DBScripts\grant_permission.sql" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
