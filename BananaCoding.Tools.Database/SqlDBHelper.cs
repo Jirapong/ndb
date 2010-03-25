@@ -201,7 +201,7 @@ namespace BananaCoding.Tools.Database
             if (task.Fixture) LoadFixtures(sqlConStr);
         }
 
-        private static void GrantPermission(DBEnvironments environment, string userToGrant)
+        public static void GrantPermission(DBEnvironments environment, string userToGrant)
         {
             string dbName = GetDatabaseName(environment);
 

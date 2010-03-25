@@ -56,6 +56,10 @@ namespace BananaCoding.Tools.Database {
                 {
                     SqlDBHelper.LoadFixtures(task);
                 }
+                else if (!string.IsNullOrEmpty(task.GrantPermission))
+                {
+                    SqlDBHelper.GrantPermission(task.Environment, task.GrantPermission);
+                }
                 else
                     printUsage(parser);
             }
