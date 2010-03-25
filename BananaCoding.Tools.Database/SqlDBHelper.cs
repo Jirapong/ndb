@@ -206,7 +206,7 @@ namespace BananaCoding.Tools.Database
             string dbName = GetDatabaseName(environment);
 
             // Create Connection String from Configuration File
-            string sqlConStr = BuildConnectionString(environment, "master");
+            string sqlConStr = BuildConnectionString(environment, dbName);
             MessageOut("in {0}", sqlConStr);
 
             // Grant DATABASE in context of master db
@@ -214,6 +214,7 @@ namespace BananaCoding.Tools.Database
             sqlQuery = sqlQuery.Replace("[DBNAME]", dbName);
             sqlQuery = sqlQuery.Replace("[DBUSER]", userToGrant);
             SqlScriptHelper.ExecuteScript(sqlQuery, sqlConStr);
+            MessageOut("Grant Permission '{0}' on {1}", userToGrant, dbName);
         }
 
         private static void LoadFixtures(string sqlConStr)
