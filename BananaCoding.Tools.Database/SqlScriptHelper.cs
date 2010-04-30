@@ -24,7 +24,7 @@ namespace BananaCoding.Tools.Database {
             if (scriptFileName == null || scriptFileName == string.Empty) {
                 throw new ArgumentException("You must supply the file name of a file containing SQL Script", scriptFileName);
             }
-            FileStream scriptStream = new FileStream(scriptFileName, FileMode.Open);
+            FileStream scriptStream = new FileStream(scriptFileName, FileMode.Open, FileAccess.Read);
             ExecuteScriptStream(scriptStream, connectionString);
         }
 

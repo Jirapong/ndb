@@ -209,6 +209,8 @@ namespace BananaCoding.Tools.Database
             string sqlConStr = BuildConnectionString(environment, dbName);
             MessageOut("in {0}", sqlConStr);
 
+            userToGrant = userToGrant.Replace("NT_", "NT ").Replace("NETWORK_", "NETWORK ");
+
             // Grant DATABASE in context of master db
             string sqlQuery = SqlScriptHelper.LoadScriptFromEmbeddedResource("BananaCoding.Tools.Database.DBScripts.grant_permission.sql");
             sqlQuery = sqlQuery.Replace("[DBNAME]", dbName);
