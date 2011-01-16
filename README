@@ -1,0 +1,1 @@
+ndb.exe is a migration tool for Sql Server. Well fit small developmemt team. Integrated with Sql Server Management Studio and Source control. The XML output allows to integrate with Continues Integration tools such as Cruise Control.NET
