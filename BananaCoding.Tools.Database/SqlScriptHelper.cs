@@ -24,8 +24,11 @@ namespace BananaCoding.Tools.Database {
             if (scriptFileName == null || scriptFileName == string.Empty) {
                 throw new ArgumentException("You must supply the file name of a file containing SQL Script", scriptFileName);
             }
-            FileStream scriptStream = new FileStream(scriptFileName, FileMode.Open, FileAccess.Read);
-            ExecuteScriptStream(scriptStream, connectionString);
+
+            using (FileStream scriptStream = new FileStream(scriptFileName, FileMode.Open, FileAccess.Read))
+            {
+                ExecuteScriptStream(scriptStream, connectionString);
+            }
         }
 
         public static string LoadScriptFromEmbeddedResource(string embeddedResourceName) {
@@ -71,14 +74,8 @@ namespace BananaCoding.Tools.Database {
             using (SqlConnection conn = new SqlConnection(connectionString)) {
                 Server server = new Server(new ServerConnection(conn));
                 server.ConnectionContext.ExecuteNonQuery(script);
-                //server.ConnectionContext.InfoMessage += new SqlInfoMessageEventHandler(ConnectionContext_InfoMessage);
             }
         }
-
-        //static void ConnectionContext_InfoMessage(object sender, SqlInfoMessageEventArgs e)
-        //{
-        //    Console.WriteLine(e.Message);
-        //}
 
         private static void ExecuteScriptStatementsByLine(TextReader scriptReader, string connectionString) {
             string scriptLine = string.Empty;

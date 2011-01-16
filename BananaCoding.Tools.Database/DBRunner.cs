@@ -5,13 +5,17 @@ using BananaCoding.CommandLineParser;
 using System.Data.SqlClient;
 using System.IO;
 
-namespace BananaCoding.Tools.Database {
-    public class DBRunner {
-        public DBRunner() {
+namespace BananaCoding.Tools.Database
+{
+    public class DBRunner
+    {
+        public DBRunner()
+        {
 
         }
 
-        internal void Run(string[] args) {
+        internal void Run(string[] args)
+        {
             Task task = new Task();
 
             Parser parser = new Parser(System.Environment.CommandLine, task);
@@ -62,6 +66,16 @@ namespace BananaCoding.Tools.Database {
                 }
                 else
                     printUsage(parser);
+            }
+            catch (System.UnauthorizedAccessException uaex)
+            {
+                StringBuilder errorSb = new StringBuilder();
+                errorSb.AppendLine(uaex.Message);
+                errorSb.AppendLine(task.Trace ? uaex.StackTrace : "(See full trace by running ndb.exe with /trace)");
+                errorSb.AppendLine("Try: attrib.exe -R migrate");
+                errorSb.AppendLine("Try: attrib.exe -R fixtures");
+
+                SqlDBHelper.MessageOut(errorSb.ToString());
             }
             catch (Microsoft.SqlServer.Management.Common.ExecutionFailureException smoEx)
             {
@@ -118,20 +132,25 @@ namespace BananaCoding.Tools.Database {
 
             // For error handling, were any switches handled?
             string[] unhandled = parser.UnhandledSwitches;
-            if (unhandled != null && unhandled.Length > 0) {
+            if (unhandled != null && unhandled.Length > 0)
+            {
                 SqlDBHelper.MessageOut("\nThe following switches were not handled.");
                 foreach (string s in unhandled)
                     SqlDBHelper.MessageOut(string.Format("  - {0}", s));
             }
         }
 
-        private void printUsage(Parser parser) {
+        private void printUsage(Parser parser)
+        {
             Parser.SwitchInfo[] si = parser.Switches;
-            if (si != null) {
+            if (si != null)
+            {
                 Console.WriteLine("There are {0} registered switches:", si.Length);
-                foreach (Parser.SwitchInfo s in si) {
+                foreach (Parser.SwitchInfo s in si)
+                {
                     StringBuilder sb = new StringBuilder();
-                    if (s.IsEnum) {
+                    if (s.IsEnum)
+                    {
                         sb.Append(":{");
                         sb.Append(string.Join(", ", s.Enumerations));
                         sb.Append("}");
@@ -139,7 +158,8 @@ namespace BananaCoding.Tools.Database {
 
                     Console.WriteLine("ndb.exe /{0}{3} or /{1} [{2:60}]", s.Name, s.Aliases[0], s.Description, sb);
                 }
-            } else
+            }
+            else
                 Console.WriteLine("There are no registered switches. run ndb.exe to view all tasks.");
         }
     }
