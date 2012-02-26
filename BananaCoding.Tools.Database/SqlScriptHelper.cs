@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
-using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 ///
 /// History: received copy from Brian Noyes
