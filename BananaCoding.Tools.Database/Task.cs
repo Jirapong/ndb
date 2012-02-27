@@ -58,7 +58,7 @@ namespace BananaCoding.Tools.Database {
         [CommandLineAlias("f")]
         public bool Fixture { get; set; }
 
-        [CommandLineSwitch("fixture_to", "Fixture database with specific file.")]
+        [CommandLineSwitch("fixture_to", "Fixture database with specific file. e.g. /ft:users")]
         [CommandLineAlias("ft")]
         public string FixtureTo { get; set; }
 

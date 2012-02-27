@@ -219,7 +219,7 @@ namespace BananaCoding.Tools.Database
             MessageOut("Grant Permission '{0}' on {1}", userToGrant, dbName);
         }
 
-        private static void LoadFixtures(string sqlConStr)
+        private static void LoadFixtures(string sqlConStr, string fixture_file = null)
         {
             if (!Directory.Exists(@"fixtures"))
             {
@@ -229,34 +229,48 @@ namespace BananaCoding.Tools.Database
 
             using (SqlConnection conn = new SqlConnection(sqlConStr))
             {
-                SqlCommand cmd = new SqlCommand("SELECT name FROM sys.Tables where type = 'U' and name != 'schema_version';", conn);
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
                 var sw = new Stopwatch();
-                while (reader.Read())
+
+                if (String.IsNullOrEmpty(fixture_file))
                 {
-                    string table_name = reader.GetString(0);
-                    string sqlscript = Path.Combine(@"fixtures", string.Concat(table_name, ".sql"));
+                    SqlCommand cmd = new SqlCommand("SELECT name FROM sys.Tables where type = 'U' and name != 'schema_version';", conn);
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
 
-                    // Run Sql from file
-                    if (File.Exists(sqlscript))
+                    while (reader.Read())
                     {
-                        using (TransactionScope scope = new TransactionScope())
-                        {
-                            MessageOut(@"Run fixture ------ {0} --------------------------", table_name);
+                        string table_name = reader.GetString(0);
+                        string sqlscript = Path.Combine(@"fixtures", string.Concat(table_name, ".sql"));
 
-                            sw.Reset();
-                            sw.Start();
-
-                            SqlScriptHelper.ExecuteScriptFile(sqlscript, sqlConStr);
-
-                            sw.Stop();
-                            MessageOut(@"Run fixture ------ {0} ({1}ms) ------ successfully.", table_name, sw.ElapsedMilliseconds);
-
-                            scope.Complete();
-                        }
+                        RunSQLFromFile(sw, sqlscript, table_name, sqlConStr);
                     }
+                }
+                else
+                {
+                    string sqlscript = Path.Combine(@"fixtures", string.Concat(fixture_file, ".sql"));
+                    RunSQLFromFile(sw, sqlscript, fixture_file, sqlConStr);
+                }
+            }
+        }
+
+        private static void RunSQLFromFile(Stopwatch sw, string sqlscript, string table_name, string sqlConStr)
+        {
+            // Run Sql from file
+            if (File.Exists(sqlscript))
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    MessageOut(@"Run fixture ------ {0} --------------------------", table_name);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    SqlScriptHelper.ExecuteScriptFile(sqlscript, sqlConStr);
+
+                    sw.Stop();
+                    MessageOut(@"Run fixture ------ {0} ({1}ms) ------ successfully.", table_name, sw.ElapsedMilliseconds);
+
+                    scope.Complete();
                 }
             }
         }
@@ -402,7 +416,7 @@ namespace BananaCoding.Tools.Database
             string sqlConStr = BuildConnectionString(environment, dbName);
             MessageOut("in {0}", sqlConStr);
 
-            LoadFixtures(sqlConStr);
+            LoadFixtures(sqlConStr, task.FixtureTo);
         }
     }
 }
