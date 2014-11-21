@@ -58,6 +58,10 @@ namespace BananaCoding.Tools.Database {
         [CommandLineAlias("f")]
         public bool Fixture { get; set; }
 
+        [CommandLineSwitch("fixture_to", "Fixture database with specific file. e.g. /ft:users")]
+        [CommandLineAlias("ft")]
+        public string FixtureTo { get; set; }
+
         [CommandLineSwitch("grant_permission", "Specify the user to grant permission to access database. e.g. /grant:\"NT AUTHORITY\\NETWORK SERVICE\"")]
         [CommandLineAlias("grant")]
         public string GrantPermission { get; set; }
