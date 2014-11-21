@@ -56,7 +56,7 @@ namespace BananaCoding.Tools.Database
                     SqlDBHelper.CreateDB(task.Environment);
                     SqlDBHelper.Migrate(task);
                 }
-                else if (task.Fixture)
+                else if (task.Fixture || !String.IsNullOrEmpty(task.FixtureTo))
                 {
                     SqlDBHelper.LoadFixtures(task);
                 }
